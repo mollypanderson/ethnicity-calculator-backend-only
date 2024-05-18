@@ -13,8 +13,9 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
-  //  implementation 'org.gedcom4j:gedcom4j:4.0.1'
-   // implementation 'org.familysearch.gedcom:gedcom:1.14.0'
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation 'commons-io:commons-io:2.16.1'
+    
     implementation 'org.gedcomx:gedcomx-model:3.20.0'
 
     // https://mvnrepository.com/artifact/org.gedcomx/gedcom5-conversion
