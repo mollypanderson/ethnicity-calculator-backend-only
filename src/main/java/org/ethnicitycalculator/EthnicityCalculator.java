@@ -5,6 +5,7 @@ import org.ethnicitycalculator.util.GedcomFileProcessor;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.gedcomx.Gedcomx;
 import org.gedcomx.conclusion.Relationship;
@@ -14,6 +15,8 @@ import org.apache.commons.io.FilenameUtils;
 public class EthnicityCalculator {
 
     public static void main(String[] args) throws IOException, SAXParseException {
+
+        //expect arg like: src/main/resources/Anderson-family-tree.ged
         String gedcomInputFilepath = args[0];
         String fileExtension = FilenameUtils.getExtension(gedcomInputFilepath);
         if (!(fileExtension.equals("ged") || fileExtension.equals("gedx"))) {
@@ -35,9 +38,14 @@ public class EthnicityCalculator {
                     " which two parents are biological.");
         }
 
+        //parents.remove(1);
         Map<String, Double> results = familyTreeService.findImmigrantAncestors(parents);
 
-        prettyPrintResults(results);
+        Map<String, Double> sortedResults = results.entrySet().stream()
+                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        prettyPrintResults(sortedResults);
     }
 
     public static void prettyPrintResults(Map<String, Double> mathResults) {
@@ -45,7 +53,7 @@ public class EthnicityCalculator {
      //   results.forEach(System.out::println);
         System.out.println("\n ---- Math results ---- \n");
         for(Map.Entry<String, Double> entry : mathResults.entrySet()){
-            System.out.println(String.format("%,.2f", entry.getValue()) + "% " + entry.getKey());
+            System.out.println(String.format("%,.2f", entry.getValue()) + "%," + entry.getKey());
         }
         double sum = 0;
         for(Map.Entry<String, Double> entry : mathResults.entrySet()){
